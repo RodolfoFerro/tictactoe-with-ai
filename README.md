@@ -2,6 +2,10 @@
 
 This is a very simple TicTacToe game implementation using Python and the minimax algorithm.
 
+<center>
+    <img src="demo.gif" width="60%">
+</center>
+
 ## How to run the application
 
 To run this project, download and install it locally using pip:
