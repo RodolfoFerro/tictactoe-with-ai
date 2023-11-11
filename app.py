@@ -3,7 +3,6 @@
 import sys
 
 import pygame
-from pygame.locals import QUIT
 
 from utils.config import load_config
 from utils.config import parse_config
@@ -15,7 +14,6 @@ from utils.display import update_window
 from utils.minimax import check_win
 from utils.minimax import get_ai_move
 from utils.minimax import get_user_move
-from utils.display import display_game_message
 
 
 def run_game(config_file="config.ini"):
@@ -51,7 +49,7 @@ def run_game(config_file="config.ini"):
 
         # Event loop
         for event in pygame.event.get():
-            if event.type == QUIT:
+            if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
             elif event.type == pygame.MOUSEBUTTONDOWN:

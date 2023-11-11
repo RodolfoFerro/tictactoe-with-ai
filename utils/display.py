@@ -1,7 +1,5 @@
 """Display utilities."""
 
-import math
-
 import pygame
 
 
