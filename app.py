@@ -1,54 +1,80 @@
+"""Tic Tac Toe Game Script."""
+
 import sys
 
 import pygame
 from pygame.locals import QUIT
 
-from utils import generate_text
-from utils import display_text
-from utils import draw_grid
-from utils import draw_game
-from utils import check_win
-from utils import get_ai_move
-from utils import get_user_move
-from utils import display_game_message
+from utils.config import load_config
+from utils.config import parse_config
+from utils.setup import load_window_params
+from utils.setup import load_colors
+from utils.setup import build_window
+from utils.setup import setup_game
+from utils.display import update_window
+from utils.minimax import check_win
+from utils.minimax import get_ai_move
+from utils.minimax import get_user_move
+from utils.display import display_game_message
 
-# Setup
-width = 480
-height = 640
-pygame.init()
-screen = pygame.display.set_mode((width, height))
-pygame.display.set_caption('Tic-Tac-Toe')
 
-# Colors, text & grid
-BLACK = (0, 0, 0)
-WHITE = (255, 255, 255)
-BLUE = (66, 135, 245)
-RED = (245, 66, 93)
+def run_game(config_file="config.ini"):
+    """Main function.
 
-text_header, text_paragraph = generate_text(BLACK)
-grid = [[None, None, None], [None, None, None], [None, None, None]]
+    Runs the game from configuration file.
 
-# AI goes first
-win = False
-grid = get_ai_move(grid)
+    Parameters
+    ----------
+    config_file : str
+        The path to the configuration file.
+    """
 
-# Main loop
-while True:
-    screen.fill(WHITE)
-    display_text(screen, text_header, text_paragraph)
-    draw_grid(screen, BLACK)
-    draw_game(screen, grid, RED, BLUE)
+    # Load configuration
+    config = load_config(config_file)
+    config = parse_config(config)
+    black, white, red, blue = load_colors(config)
+    title = load_window_params(config)
 
-    win, winner = check_win(grid)
-    display_game_message(screen, win, winner, WHITE, RED, BLUE, BLACK)
+    # Setup pygame window
+    screen, text_header, text_paragraph = build_window(title, black)
 
-    for event in pygame.event.get():
-        if event.type == QUIT:
-            pygame.quit()
-            sys.exit()
-        elif event.type == pygame.MOUSEBUTTONDOWN:
-            grid, valid_click = get_user_move(screen, grid)
-            if valid_click:
-                grid = get_ai_move(grid)
+    # Setup game
+    grid, win, winner = setup_game()
 
-    pygame.display.update()
+    # AI goes first?
+    grid = get_ai_move(grid)
+
+    # Main loop
+    while True:
+        update_window(screen, text_header, text_paragraph, grid, white, black,
+                      red, blue, win, winner)
+
+        # Event loop
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                pygame.quit()
+                sys.exit()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                grid, valid_click = get_user_move(screen, grid)
+
+                # Check if game is over
+                win, winner = check_win(grid)
+
+                if winner:
+                    pygame.event.set_blocked(pygame.MOUSEBUTTONDOWN)
+                    valid_click = False
+
+                # If game is not over, get AI move
+                if valid_click:
+                    grid = get_ai_move(grid)
+
+                    # Check if game is over
+                    win, winner = check_win(grid)
+                    if winner:
+                        pygame.event.set_blocked(pygame.MOUSEBUTTONDOWN)
+
+        pygame.display.update()
+
+
+if __name__ == "__main__":
+    run_game()
