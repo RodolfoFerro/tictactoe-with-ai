@@ -19,10 +19,8 @@ def find_available(grid):
         The coordinates of the first available cell.
     """
 
-    for i, row in enumerate(grid):
-        for j, cell in enumerate(row):
-            if cell is None:
-                return i, j
+    # TODO: Generate strategy to find an available cell
+    # Must return a pair of coordinates (x, y)
 
     return None
 
@@ -91,19 +89,9 @@ def get_ai_move(grid):
 
     updated_grid = grid.copy()
 
-    best_score = -math.inf
-    for i, row in enumerate(grid):
-        for j, cell in enumerate(row):
-            if cell is None:
-                updated_grid[i][j] = "X"
-                score = minimax(updated_grid, 0, "O")
-                updated_grid[i][j] = None
-
-                if score > best_score:
-                    best_score = score
-                    best_move = (i, j)
-
-    updated_grid[best_move[0]][best_move[1]] = "X"
+    # TODO: Implement minimax algorithm to get the best move
+    # Hint: Use the minimax function over all available cells to
+    # determine the best move for the AI
 
     return updated_grid
 
@@ -122,10 +110,8 @@ def check_tie(grid):
         True if the game is a tie, False otherwise.
     """
 
-    for row in grid:
-        for cell in row:
-            if cell is None:
-                return False
+    # TODO: Check if the game is a tie
+    # Hint: The only possible way is having all occupied cells but no win
 
     return True
 
@@ -146,25 +132,13 @@ def check_win(grid):
         The player who won the game.
     """
 
-    # Check rows
-    for row in grid:
-        if row[0] == row[1] == row[2] and row[0] is not None:
-            return True, row[0]
+    # TODO: Check rows
 
-    # Check columns
-    for i in range(3):
-        if grid[0][i] == grid[1][i] == grid[2][i] and grid[0][i] is not None:
-            return True, grid[0][i]
+    # TODO: Check columns
 
-    # Check diagonals
-    if grid[0][0] == grid[1][1] == grid[2][2] and grid[0][0] is not None:
-        return True, grid[0][0]
-    if grid[0][2] == grid[1][1] == grid[2][0] and grid[0][2] is not None:
-        return True, grid[0][2]
+    # TODO: Check diagonals
 
-    # Check tie
-    if check_tie(grid):
-        return False, "tie"
+    # TODO: Check tie
 
     return False, None
 
@@ -187,38 +161,14 @@ def minimax(grid, depth, player):
         The score of the move.
     """
 
-    # Base case
-    win, winner = check_win(grid)
-    if win:
-        if winner == "X":
-            return 1
-        if winner == "O":
-            return -1
-    if winner == "tie":
-        return 0
+    # TODO: Check base case
+    # Hint: Check if the game is a won, a lose or a tie
+    # Report value 1, -1 or 0 respectively
 
-    # Recursive case
+    # TODO: Recursive case
+    # Hint: Start with "X" and maximize, then minimize for "O"
+    # Do not forget to return the cells to their original values
     if player == "X":
-        best_score = -math.inf
-
-        for i, row in enumerate(grid):
-            for j, cell in enumerate(row):
-                if cell is None:
-                    grid[i][j] = "X"
-                    score = minimax(grid, depth + 1, "O")
-                    grid[i][j] = None
-                    best_score = max(score, best_score)
-
-        return best_score
+        pass
     else:
-        best_score = math.inf
-
-        for i, row in enumerate(grid):
-            for j, cell in enumerate(row):
-                if cell is None:
-                    grid[i][j] = "O"
-                    score = minimax(grid, depth + 1, "X")
-                    grid[i][j] = None
-                    best_score = min(score, best_score)
-
-        return best_score
+        pass
