@@ -91,7 +91,7 @@ def get_ai_move(grid):
 
     updated_grid = grid.copy()
 
-    best_score = math.inf
+    best_score = -math.inf
     for i, row in enumerate(grid):
         for j, cell in enumerate(row):
             if cell is None:
@@ -99,7 +99,7 @@ def get_ai_move(grid):
                 score = minimax(updated_grid, 0, "O")
                 updated_grid[i][j] = None
 
-                if score < best_score:
+                if score > best_score:
                     best_score = score
                     best_move = (i, j)
 
@@ -191,15 +191,15 @@ def minimax(grid, depth, player):
     win, winner = check_win(grid)
     if win:
         if winner == "X":
-            return -1
-        if winner == "O":
             return 1
+        if winner == "O":
+            return -1
     if winner == "tie":
         return 0
 
     # Recursive case
     if player == "X":
-        best_score = math.inf
+        best_score = -math.inf
 
         for i, row in enumerate(grid):
             for j, cell in enumerate(row):
@@ -207,11 +207,11 @@ def minimax(grid, depth, player):
                     grid[i][j] = "X"
                     score = minimax(grid, depth + 1, "O")
                     grid[i][j] = None
-                    best_score = min(score, best_score)
+                    best_score = max(score, best_score)
 
         return best_score
     else:
-        best_score = -math.inf
+        best_score = math.inf
 
         for i, row in enumerate(grid):
             for j, cell in enumerate(row):
@@ -219,6 +219,6 @@ def minimax(grid, depth, player):
                     grid[i][j] = "O"
                     score = minimax(grid, depth + 1, "X")
                     grid[i][j] = None
-                    best_score = max(score, best_score)
+                    best_score = min(score, best_score)
 
         return best_score
